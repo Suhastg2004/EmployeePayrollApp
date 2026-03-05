@@ -1,0 +1,8 @@
+
+----------------------
+Employee ID : EMP-1234
+Name        : Suhas T G
+Email       : stg@gmail.com
+Phone       : 6363408985
+Username    : suhastg2004
+----------------------
