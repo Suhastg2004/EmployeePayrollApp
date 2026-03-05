@@ -6,3 +6,28 @@ Email       : stg@gmail.com
 Phone       : 6363408985
 Username    : suhastg2004
 ----------------------
+
+----------------------
+Employee ID : EMP-1234
+Name        : Suhas
+Email       : gst@gmail.com
+Phone       : 6767676767
+Username    : stg
+----------------------
+
+----------------------
+Employee ID : EMP-1234
+Name        : Suhas
+Email       : gst@gmail.com
+Phone       : 6363636363
+Username    : stg
+----------------------
+
+----------------------
+Employee ID : EMP-4321
+Name        : Suhas
+Email       : stg@gmail.com
+Phone       : 6363636363
+Username    : stg
+Password    : 1234
+----------------------

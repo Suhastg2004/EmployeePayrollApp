@@ -1,10 +1,9 @@
 //author @ Suhas T G
-//version 1.0
+//version 2.0
 
 package com.payrollapp;
-
-//import everything from other packages
 import com.payrollapp.registeration.*;
+import com.payrollapp.authentication.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -50,10 +49,27 @@ public class Main {
 
 		} catch (ValidationException e) {
 			System.out.println("\nValidation Failed: " + e.getMessage());
-			
+			return;
 		} catch (IOException e) {
 			System.out.println("\nError saving employee data!");
+			return;
 		}
+
+
+		System.out.println("=== USE CASE 2: EMPLOYEE AUTHENTICATION & LOGIN ===\n");
+
+		AuthenticationService auth = new AuthenticationService();
+		Session session = auth.login();
+
+		if (session != null) {
+			System.out.println("\n" + session);
+			if (!session.isExpired()) {
+				System.out.println("Session active and valid.");
+			} else {
+				System.out.println("Session expired. Please login again.");
+			}
+		}
+
 
 	}
 
