@@ -1,9 +1,10 @@
 //author @ Suhas T G
-//version 2.0
+//version 3.0
 
 package com.payrollapp;
 import com.payrollapp.registeration.*;
 import com.payrollapp.authentication.*;
+import com.payrollapp.payroll.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -11,66 +12,109 @@ import java.util.Scanner;
 
 public class Main {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		Scanner sc = new Scanner(System.in);
-		System.out.println("=== USE CASE 1: EMPLOYEE REGISTRATION ===");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== USE CASE 1: EMPLOYEE REGISTRATION ===");
 
-		try {
-			System.out.print("Enter Employee ID (EMP-XXXX): ");
-			String empId = sc.nextLine();
-			Validator.validateEmpId(empId);
+        Employee emp = null;
 
-			System.out.print("Enter Name: ");
-			String name = sc.nextLine();
+        try {
+            System.out.print("Enter Employee ID (EMP-XXXX): ");
+            String empId = sc.nextLine();
+            Validator.validateEmpId(empId);
 
-			System.out.print("Enter Email: ");
-			String email = sc.nextLine();
-			Validator.validateEmail(email);
+            System.out.print("Enter Name: ");
+            String name = sc.nextLine();
 
-			System.out.print("Enter Phone Number: ");
-			String phone = sc.nextLine();
-			Validator.validatePhone(phone);
+            System.out.print("Enter Email: ");
+            String email = sc.nextLine();
+            Validator.validateEmail(email);
 
-			System.out.print("Create Username: ");
-			String username = sc.nextLine();
+            System.out.print("Enter Phone Number: ");
+            String phone = sc.nextLine();
+            Validator.validatePhone(phone);
 
-			System.out.print("Create Password: ");
-			String password = sc.nextLine();
+            System.out.print("Create Username: ");
+            String username = sc.nextLine();
 
-			UserAccount ua = new UserAccount(username, password);
+            System.out.print("Create Password: ");
+            String password = sc.nextLine();
 
-			Employee emp = new Employee(empId, name, email, phone, ua);
+            UserAccount ua = new UserAccount(username, password);
 
-			emp.persist(); // save to file
+            emp = new Employee(empId, name, email, phone, ua);
 
-			System.out.println("\nEmployee Registered Successfully!\n");
-			System.out.println(emp);
+            emp.persist(); // save to file
 
-		} catch (ValidationException e) {
-			System.out.println("\nValidation Failed: " + e.getMessage());
-			return;
-		} catch (IOException e) {
-			System.out.println("\nError saving employee data!");
-			return;
-		}
+            System.out.println("\nEmployee Registered Successfully!\n");
+            System.out.println(emp);
 
-
-		System.out.println("=== USE CASE 2: EMPLOYEE AUTHENTICATION & LOGIN ===\n");
-
-		AuthenticationService auth = new AuthenticationService();
-		Session session = auth.login();
-
-		if (session != null) {
-			System.out.println("\n" + session);
-			if (!session.isExpired()) {
-				System.out.println("Session active and valid.");
-			} else {
-				System.out.println("Session expired. Please login again.");
-			}
-		}
+        } catch (ValidationException e) {
+            System.out.println("\nValidation Failed: " + e.getMessage());
+            sc.close();
+            return;
+        } catch (IOException e) {
+            System.out.println("\nError saving employee data!");
+            sc.close();
+            return;
+        }
 
 
-	}
+        System.out.println("=== USE CASE 2: EMPLOYEE AUTHENTICATION & LOGIN ===\n");
+
+        AuthenticationService auth = new AuthenticationService();
+        Session session = auth.login();
+
+        if (session != null) {
+            System.out.println("\n" + session);
+            if (!session.isExpired()) {
+                System.out.println("Session active and valid.");
+            } else {
+                System.out.println("Session expired. Please login again.");
+                sc.close();
+                return;
+            }
+        } else {
+            sc.close();
+            return;
+        }
+
+
+        // ============ USE CASE 3: PAYROLL CALCULATION ============
+        System.out.println("\n=== USE CASE 3: PAYROLL CALCULATION ===\n");
+
+        // Get salary details from user
+        System.out.print("Enter Basic Salary: ");
+        double basicSalary = sc.nextDouble();
+
+        System.out.print("Enter HRA: ");
+        double hra = sc.nextDouble();
+
+        System.out.print("Enter DA: ");
+        double da = sc.nextDouble();
+
+        System.out.print("Enter Allowances: ");
+        double allowances = sc.nextDouble();
+        sc.nextLine(); // consume newline
+
+        System.out.print("Enter Month (e.g., March 2026): ");
+        String month = sc.nextLine();
+
+        // Create SalaryComponents (Composition)
+        SalaryComponents components = new SalaryComponents(basicSalary, hra, da, allowances);
+
+        // Use PayrollService to calculate and generate payslip
+        // Pass Employee from UC1 (Aggregation - Employee exists independently)
+        PayrollService payrollService = new PayrollService();
+        Payslip payslip = payrollService.generatePayslip(emp, components, month);
+
+        // Display the payslip
+        System.out.println(payslip);
+
+        System.out.println("Payroll processing complete!");
+        
+        sc.close();
+    }
 
 }

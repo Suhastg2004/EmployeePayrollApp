@@ -19,6 +19,50 @@ public class Employee {
         this.account = account;
     }
 
+    // ============ GETTERS ============
+
+    public String getEmpId() {
+        return empId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public UserAccount getAccount() {
+        return account;
+    }
+
+    // ============ SETTERS ============
+
+    public void setEmpId(String empId) {
+        this.empId = empId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAccount(UserAccount account) {
+        this.account = account;
+    }
+
     @Override
     public String toString() {
         return "Employee ID : " + empId +
