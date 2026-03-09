@@ -17,6 +17,7 @@ public class Main {
 		System.out.println("=== USE CASE 1: EMPLOYEE REGISTRATION ===");
 
 		try {
+			
 			System.out.print("Enter Employee ID (EMP-XXXX): ");
 			String empId = sc.nextLine();
 			Validator.validateEmpId(empId);
