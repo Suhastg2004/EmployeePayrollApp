@@ -20,4 +20,7 @@ public class SalaryComponents {
         this.da = da;
         this.allowances = allowances;
     }
+    
+    public double getNetPay() { return netPay; }
+    
 }

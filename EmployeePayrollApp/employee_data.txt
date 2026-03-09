@@ -31,3 +31,12 @@ Phone       : 6363636363
 Username    : stg
 Password    : 1234
 ----------------------
+
+----------------------
+Employee ID : EMP-1234
+Name        : Suhas
+Email       : stg@gmail.com
+Phone       : 6363636363
+Username    : stg
+Password    : 1234
+----------------------

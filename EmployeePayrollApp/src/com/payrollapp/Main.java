@@ -5,6 +5,8 @@ package com.payrollapp;
 import com.payrollapp.registeration.*;
 import com.payrollapp.authentication.*;
 import com.payrollapp.payroll.*;
+import com.payrollapp.download.*;
+import com.payrollapp.download.Payslip;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -107,13 +109,65 @@ public class Main {
         // Use PayrollService to calculate and generate payslip
         // Pass Employee from UC1 (Aggregation - Employee exists independently)
         PayrollService payrollService = new PayrollService();
-        Payslip payslip = payrollService.generatePayslip(emp, components, month);
+        com.payrollapp.payroll.Payslip payslip = payrollService.generatePayslip(emp, components, month);
 
         // Display the payslip
         System.out.println(payslip);
 
         System.out.println("Payroll processing complete!");
         
+     // ============ USE CASE 4: PAYSLIP PRINT / DOWNLOAD ============
+        System.out.println("\n=== USE CASE 4: PAYSLIP PRINT / DOWNLOAD ===");
+
+        try {
+            // 1) Create an immutable view for download from UC3 data (protect originals)
+            //    Using the separate download model to avoid modifying the payroll model
+            Payslip originalDownloadView =
+                new Payslip(
+                    emp.getEmpId(),
+                    emp.getName(),
+                    month,
+                    components.getNetPay()   // <-- requires getNetPay() in SalaryComponents
+                );
+
+            // 2) Clone the payslip so download/print uses an independent copy
+            Payslip cloned =
+                (Payslip) originalDownloadView.clone();
+
+            // 3) Verify equality (logical) and identity (object) via equals() / hashCode()
+            if (cloned.equals(originalDownloadView)) {
+                System.out.println("\nVerified: Download copy is equal to original.");
+            } else {
+                System.out.println("\nWarning: Download copy differs from original!");
+            }
+            System.out.println("Original hashcode : " + originalDownloadView.hashCode());
+            System.out.println("Cloned   hashcode : " + cloned.hashCode());
+
+            // 4) Check download expiry using a short‑lived token (e.g., 1 minute)
+            DownloadToken token = new DownloadToken();
+            if (token.isExpired()) {
+                System.out.println("\nDownload link expired. Please regenerate.");
+                sc.close();
+                return;
+            }
+
+            // 5) Persist the cloned copy as TXT and (demo) PDF
+            FileService fs = new FileService();
+            String txtPath = fs.savePayslipAsText(cloned);
+            String pdfPath = fs.savePayslipAsPdf(cloned);
+
+            System.out.println("\nPayslip Download Successful.");
+            System.out.println("Saved as text file : " + txtPath);
+            System.out.println("Saved as PDF file  : " + pdfPath);
+
+            // 6) Print the cloned payslip to console
+            System.out.println("\n--- Printed Payslip ---");
+            System.out.println(cloned);
+
+        	} catch (Exception e) {
+            System.out.println("Error during payslip download: " + e.getMessage());
+        	}
+
         sc.close();
     }
 
